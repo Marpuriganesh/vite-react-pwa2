@@ -72,6 +72,8 @@ export default defineConfig({
         orientation: "portrait",
 
       },
+      injectRegister: null,
+
     }),
     react(),
     mkcert(),

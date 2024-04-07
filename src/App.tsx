@@ -1,10 +1,54 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite-72x72.svg'
 import './App.css'
+import { generateToken,messaging } from './notificaions/firebase'
+import { onMessage } from 'firebase/messaging'
 
 function App() {
   const [count, setCount] = useState(0)
+  useEffect(() => {
+    const userAgent = navigator.userAgent;
+    const deviceType = getDeviceType(userAgent);
+    generateToken(deviceType)
+    onMessage(messaging,(payload) => {
+      console.log(payload)
+    })
+  },[])
+
+      // Function to determine the device type from userAgent
+      const getDeviceType = (userAgent: string) => {
+        // Check for Android
+        if (/Android/i.test(userAgent)) {
+            return 'Android';
+        }
+        // Check for iPhone
+        if (/iPhone/i.test(userAgent)) {
+            return 'iPhone';
+        }
+        // Check for iPad
+        if (/iPad/i.test(userAgent)) {
+            return 'iPad';
+        }
+        // Check for iPod
+        if (/iPod/i.test(userAgent)) {
+            return 'iPod';
+        }
+        // Check for BlackBerry
+        if (/BlackBerry/i.test(userAgent)) {
+            return 'BlackBerry';
+        }
+        // Check for Windows Phone
+        if (/IEMobile/i.test(userAgent)) {
+            return 'Windows Phone';
+        }
+        // Check for Opera Mini
+        if (/Opera Mini/i.test(userAgent)) {
+            return 'Opera Mini';
+        }
+        // Default to Desktop if none of the above
+        return 'Desktop';
+    };
 
   return (
     <>
