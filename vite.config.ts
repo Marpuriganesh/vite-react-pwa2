@@ -6,6 +6,7 @@ import mkcert from "vite-plugin-mkcert";
 export default defineConfig({
   plugins: [
     VitePWA({
+      manifestFilename: "manifest.json",
       mode: "production",
       base: "/",
       registerType: "autoUpdate",
