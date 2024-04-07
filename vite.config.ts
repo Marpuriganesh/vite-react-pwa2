@@ -9,10 +9,10 @@ export default defineConfig({
       mode: "production",
       base: "/",
       registerType: "autoUpdate",
-      devOptions: {
-        enabled: true,
-        type: "module",
-      },
+      // devOptions: {
+      //   enabled: true,
+      //   type: "module",
+      // },
       includeAssets: ["vite.svg"],
       manifest: {
         name: "PWA Router",
