@@ -6,13 +6,11 @@ import mkcert from "vite-plugin-mkcert";
 export default defineConfig({
   plugins: [
     VitePWA({
-      manifestFilename: "manifest.json",
       mode: "production",
       base: "/",
       registerType: "autoUpdate",
       // devOptions: {
       //   enabled: true,
-      //   type: "module",
       // },
       includeAssets: ["vite-72x72.svg", "vite-96x96.svg", "vite-128x128.svg", "vite-144x144.svg", "vite-152x152.svg", "vite-192x192.svg", "vite-384x384.svg", "vite-512x512.svg","vite.ico"],
       manifest: {
@@ -73,8 +71,9 @@ export default defineConfig({
         orientation: "portrait",
 
       },
-      injectRegister: null,
-
+      // injectRegister: null,
+      strategies: "injectManifest",
+      filename:"firebase-messaging-sw.js",
     }),
     react(),
     mkcert(),

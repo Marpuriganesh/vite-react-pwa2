@@ -1,57 +1,95 @@
-import { useState,useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite-72x72.svg'
-import './App.css'
-import { generateToken,messaging } from './notificaions/firebase'
-import { onMessage } from 'firebase/messaging'
+import { useState, useEffect, useRef } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite-72x72.svg";
+import "./App.css";
+import { generateToken, messaging } from "./notificaions/firebase";
+import { onMessage } from "firebase/messaging";
+import {
+  browserName,
+  deviceType,
+  osName,
+  osVersion,
+} from "react-device-detect";
 
 function App() {
-  const [count, setCount] = useState(0)
-  useEffect(() => {
-    const userAgent = navigator.userAgent;
-    const deviceType = getDeviceType(userAgent);
-    generateToken(deviceType)
-    onMessage(messaging,(payload) => {
-      console.log(payload)
-    })
-  },[])
+  const [count, setCount] = useState(0);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-      // Function to determine the device type from userAgent
-      const getDeviceType = (userAgent: string) => {
-        // Check for Android
-        if (/Android/i.test(userAgent)) {
-            return 'Android';
+  useEffect(() => {
+    console.log(
+      `broser name: ${browserName}, device type: ${deviceType}, os name: ${osName}, os version: ${osVersion}`
+    );
+    checkNotificationPermission();
+  }, []);
+  function checkNotificationPermission() {
+    // Check if the browser supports the Notification API
+    if (!("Notification" in window)) {
+      console.log("This browser does not support desktop notification");
+      return;
+    }
+
+    // Check the current permission status
+    const permission = Notification.permission;
+    if (permission === "granted") {
+      console.log("Notifications permission granted");
+    } else if (permission === "denied") {
+      console.log("Notifications permission denied");
+    } else if (permission === "default") {
+      console.log("Notifications permission has not been set yet");
+      if (dialogRef.current) {
+        dialogRef.current.showModal();
+        dialogRef.current.style.display = "flex";
+      }
+    }
+  }
+
+  function handleDialogClose() {
+    if (dialogRef.current) {
+      dialogRef.current.close();
+      // Remove any additional CSS styling here
+      dialogRef.current.style.display = "none"; // Example: Hides the dialog
+    }
+  }
+
+  function handleSubcribe() {
+    Notification.requestPermission().then((permission) => {
+      handleDialogClose();
+      navigator.serviceWorker.ready.then((registration) => {
+        console.log(
+          "Registration successful, scope is:",
+          registration.scope
+        );
+        console.log(registration.active);
+        if (permission === "granted") {
+          generateToken(deviceType, registration);
+          onMessage(messaging, (payload) => {
+            console.log(payload);
+          });
         }
-        // Check for iPhone
-        if (/iPhone/i.test(userAgent)) {
-            return 'iPhone';
-        }
-        // Check for iPad
-        if (/iPad/i.test(userAgent)) {
-            return 'iPad';
-        }
-        // Check for iPod
-        if (/iPod/i.test(userAgent)) {
-            return 'iPod';
-        }
-        // Check for BlackBerry
-        if (/BlackBerry/i.test(userAgent)) {
-            return 'BlackBerry';
-        }
-        // Check for Windows Phone
-        if (/IEMobile/i.test(userAgent)) {
-            return 'Windows Phone';
-        }
-        // Check for Opera Mini
-        if (/Opera Mini/i.test(userAgent)) {
-            return 'Opera Mini';
-        }
-        // Default to Desktop if none of the above
-        return 'Desktop';
-    };
+      });
+    });
+  }
+
+
 
   return (
     <>
+      <dialog className="dialog" ref={dialogRef} style={{ display: "none" }}>
+        <img
+          src="/vite-192x192.png"
+          className="logo"
+          alt="Vite logo"
+          typeof="image/png"
+        />
+        <p>Subscribe to get notifications</p>
+        <div>
+          <button id="notification" onClick={handleSubcribe}>
+            subcribe
+          </button>
+          <button onClick={handleDialogClose}>close</button>
+        </div>
+      </dialog>
+
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -62,7 +100,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => setCount((prev) => prev + 1)}>
           count is {count}
         </button>
         <p>
@@ -73,7 +111,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

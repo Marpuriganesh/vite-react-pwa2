@@ -31,10 +31,35 @@ messaging.onBackgroundMessage((payload) => {
       payload
     );
     // Customize notification here
-    const notificationTitle = payload.notification.title;
+    const notificationTitle = payload.data.title;
     const notificationOptions = {
-      body: payload.notification.body,
+      body: payload.data.body,
       icon: '/vite-192x192.png',
+      actions:JSON.parse(payload.data.actions),
+      data:JSON.parse(payload.data._data)
     };
     self.registration.showNotification(notificationTitle, notificationOptions);
   });
+
+
+
+
+self.addEventListener('notificationclick', function (event) {
+  const action = event.action;
+  switch (action) {
+    case 'open_url':
+      // eslint-disable-next-line no-case-declarations
+      const url = event.notification.data.url;
+      if (url) {
+        clients.openWindow(url);
+      } else {
+        console.error('URL not found in the notification data');
+        console.log(event.notification.data)
+      }
+    console.log(event)
+    break;
+    default:
+      // Handle other actions
+      console.log('Unknown action:', action);
+  }
+})

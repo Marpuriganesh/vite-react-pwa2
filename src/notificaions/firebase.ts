@@ -31,32 +31,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
-export const generateToken = async (deviceType:string) => {
+export const generateToken = async (deviceType:string,registration: ServiceWorkerRegistration) => {
     // Usage example
     const deviceId = generateDeviceId();
     const device = deviceType+deviceId;
-    const permission = await Notification.requestPermission();
-    console.log(permission);
-    if (permission === 'granted') {
-        const token = await getToken(messaging,{
-            vapidKey:"BErrvVg-igurWkB-5TgQ1OM_sdTPBiXJfzFQNK7-DQiRbFrU1YivmxgDtyT5Gaglztti07Q12hBQzAuibuUllmw"
-        });
-        console.log(token); 
-        
-        // Make fetch request to FastAPI endpoint
-        fetch('https://socketio-reach-out.koyeb.app/store-token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ device_id:device,token:token }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
+    const token = await getToken(messaging,{
+        serviceWorkerRegistration:registration,
+        vapidKey:"BErrvVg-igurWkB-5TgQ1OM_sdTPBiXJfzFQNK7-DQiRbFrU1YivmxgDtyT5Gaglztti07Q12hBQzAuibuUllmw"
+    });
+    console.log(token);
+    // Make fetch request to FastAPI endpoint
+    fetch('https://socketio-reach-out.koyeb.app/store-token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ device_id:device,token:token }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
