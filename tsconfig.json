@@ -24,6 +24,6 @@
       "vite-plugin-pwa/react",
     ]
   },
-  "include": ["src"],
+  "include": ["src", "public/firebase-messaging-sw.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

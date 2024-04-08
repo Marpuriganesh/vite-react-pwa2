@@ -9,9 +9,9 @@ export default defineConfig({
       mode: "production",
       base: "/",
       registerType: "autoUpdate",
-      // devOptions: {
-      //   enabled: true,
-      // },
+      devOptions: {
+        enabled: true,
+      },
       includeAssets: ["vite-72x72.svg", "vite-96x96.svg", "vite-128x128.svg", "vite-144x144.svg", "vite-152x152.svg", "vite-192x192.svg", "vite-384x384.svg", "vite-512x512.svg","vite.ico"],
       manifest: {
         name: "PWA Router",
@@ -73,9 +73,10 @@ export default defineConfig({
       },
       // injectRegister: null,
       strategies: "injectManifest",
-      srcDir: "src",
       filename:"firebase-messaging-sw.js",
-      
+      injectManifest: {
+        injectionPoint: undefined
+      },
     }),
     react(),
     mkcert(),
