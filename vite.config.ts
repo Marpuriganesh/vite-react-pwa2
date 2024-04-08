@@ -73,7 +73,9 @@ export default defineConfig({
       },
       // injectRegister: null,
       strategies: "injectManifest",
+      srcDir: "src",
       filename:"firebase-messaging-sw.js",
+      
     }),
     react(),
     mkcert(),
