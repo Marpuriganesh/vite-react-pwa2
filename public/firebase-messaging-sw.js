@@ -37,7 +37,8 @@ messaging.onBackgroundMessage((payload) => {
       body: payload.data.body,
       icon: '/vite-192x192.png',
       actions:JSON.parse(payload.data.actions),
-      data:JSON.parse(payload.data._data)
+      data:JSON.parse(payload.data._data),
+      badge: '/vite-32x32.png',
     };
     self.registration.showNotification(notificationTitle, notificationOptions);
   });
