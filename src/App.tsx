@@ -2,14 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite-72x72.svg";
 import "./App.css";
-import { generateToken, messaging } from "./notificaions/firebase";
-import { onMessage } from "firebase/messaging";
+// import { generateToken, messaging } from "./notificaions/firebase";
+// import { onMessage } from "firebase/messaging";
 import {
   browserName,
   deviceType,
   osName,
   osVersion,
 } from "react-device-detect";
+import {motion} from 'framer-motion'
 
 function App() {
   const [count, setCount] = useState(0);
@@ -52,21 +53,31 @@ function App() {
   }
 
   function handleSubcribe() {
-    Notification.requestPermission().then((permission) => {
+    Notification.requestPermission().then(() => {
       handleDialogClose();
       navigator.serviceWorker.ready.then((registration) => {
-        console.log(
-          "Registration successful, scope is:",
-          registration.scope
-        );
-        console.log(registration.active);
-        if (permission === "granted") {
-          generateToken(deviceType, registration);
-          onMessage(messaging, (payload) => {
-            console.log(payload);
-          });
+        const sw = registration?.active;
+        if (sw) {
+          sw.postMessage({
+            device_id:deviceType+'_'+osName,
+            type:"push_token"
+          })
         }
-      });
+       })
+
+      // navigator.serviceWorker.ready.then((registration) => {
+      //   console.log(
+      //     "Registration successful, scope is:",
+      //     registration.scope
+      //   );
+      //   console.log(registration.active);
+      //   if (permission === "granted") {
+      //     generateToken(deviceType, registration);
+      //     onMessage(messaging, (payload) => {
+      //       console.log(payload);
+      //     });
+      //   }
+      // });
     });
   }
 
@@ -74,7 +85,12 @@ function App() {
 
   return (
     <>
-      <dialog className="dialog" ref={dialogRef} style={{ display: "none" }}>
+      <motion.dialog className="dialog" ref={dialogRef} style={{ display: "none" }}
+
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+
+      >
         <img
           src="/vite-192x192.png"
           className="logo"
@@ -88,7 +104,7 @@ function App() {
           </button>
           <button onClick={handleDialogClose}>close</button>
         </div>
-      </dialog>
+      </motion.dialog>
 
       <div>
         <a href="https://vitejs.dev" target="_blank">

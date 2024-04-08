@@ -78,6 +78,8 @@ export default defineConfig({
       injectManifest: {
         injectionPoint: undefined
       },
+
+    
     }),
     react(),
     mkcert(),
