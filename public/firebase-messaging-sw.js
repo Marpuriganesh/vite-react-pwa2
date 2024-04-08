@@ -77,6 +77,12 @@ function generateUniqueDeviceId() {
 self.addEventListener("message", (event) => {
   const { data } = event;
   const temp = generateUniqueDeviceId();
+  if (data.type === "show_notification") {
+    self.registration.showNotification("count", {
+      body:data.value,
+      icon: "/vite-192x192.png",
+    })
+  }
   messaging
     .getToken({
       vapidKey:

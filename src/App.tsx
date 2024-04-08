@@ -116,7 +116,21 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((prev) => prev + 1)}>
+        <button onClick={() => {
+          setCount((prev) => prev + 1)
+
+          navigator.serviceWorker.getRegistration().then((registration) => {
+            const sw = registration?.active;
+            if (sw) {
+              sw.postMessage({
+                type:"show_notification",
+                value:count
+              })
+            }
+           })
+
+
+          }}>
           count is {count}
         </button>
         <p>
