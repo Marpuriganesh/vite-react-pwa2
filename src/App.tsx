@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite-72x72.svg";
 import "./App.css";
-// import { generateToken, messaging } from "./notificaions/firebase";
+// import { generateToken, messaging } from "./notifications/firebase";
 // import { onMessage } from "firebase/messaging";
 import {
   browserName,
@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     console.log(
-      `broser name: ${browserName}, device type: ${deviceType}, os name: ${osName}, os version: ${osVersion}`
+      `browser name: ${browserName}, device type: ${deviceType}, os name: ${osName}, os version: ${osVersion}`
     );
     checkNotificationPermission();
   }, []);
@@ -52,7 +52,7 @@ function App() {
     }
   }
 
-  function handleSubcribe() {
+  function handleSub() {
     Notification.requestPermission().then(() => {
       handleDialogClose();
       navigator.serviceWorker.ready.then((registration) => {
@@ -99,8 +99,8 @@ function App() {
         />
         <p>Subscribe to get notifications</p>
         <div>
-          <button id="notification" onClick={handleSubcribe}>
-            subcribe
+          <button id="notification" onClick={handleSub}>
+            subscribe
           </button>
           <button onClick={handleDialogClose}>close</button>
         </div>
