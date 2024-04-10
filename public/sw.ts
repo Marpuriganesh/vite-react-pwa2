@@ -220,38 +220,40 @@ self.addEventListener("message", (event) => {
           icon: "/vite-192x192.png",
         })
       }
-     getToken(messaging,{
-          serviceWorkerRegistration: self.registration,
-          vapidKey:
-            "BErrvVg-igurWkB-5TgQ1OM_sdTPBiXJfzFQNK7-DQiRbFrU1YivmxgDtyT5Gaglztti07Q12hBQzAuibuUllmw",
-        })
-        .then((currentToken) => {
-          if (currentToken) {
-            console.log("current token for client: ", currentToken);
-            if (data.type === "push_token") {
-              fetch("https://socketio-reach-out.koyeb.app/store-token", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  device_id: data.device_id+temp,
-                  token: currentToken,
-                }),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  console.log(data);
+      if (data.type === "push_token") {
+        getToken(messaging,{
+            serviceWorkerRegistration: self.registration,
+            vapidKey:
+              "BErrvVg-igurWkB-5TgQ1OM_sdTPBiXJfzFQNK7-DQiRbFrU1YivmxgDtyT5Gaglztti07Q12hBQzAuibuUllmw",
+          })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log("current token for client: ", currentToken);
+              if (data.type === "push_token") {
+                fetch("https://socketio-reach-out.koyeb.app/store-token", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    device_id: data.device_id+temp,
+                    token: currentToken,
+                  }),
                 })
-                .catch((error) => {
-                  console.error("Error:", error);
-                });
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log(data);
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                  });
+              }
+            } else {
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
             }
-          } else {
-            console.log(
-              "No registration token available. Request permission to generate one."
-            );
-          }
-        });
+          });
+      }
     });
 
